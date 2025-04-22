@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Planificador de Procesos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Simulador de Planificación</h1>
+
+        <div class="formulario">
+            <input type="text" id="nombre" placeholder="Nombre del proceso">
+            <input type="number" id="llegada" placeholder="Tiempo de llegada">
+            <input type="number" id="duracion" placeholder="Duración">
+            <input type="number" id="prioridad" placeholder="Prioridad (opcional)">
+            <button onclick="agregarProceso()">Agregar</button>
+        </div>
+
+        <ul id="lista-procesos"></ul>
+
+        <div class="formulario">
+            <select id="algoritmo">
+                <option value="FCFS">FCFS</option>
+                <option value="SJF">SJF</option>
+                <option value="Round Robin">Round Robin</option>
+                <option value="Prioridades">Prioridades</option>
+            </select>
+            <input type="number" id="quantum" placeholder="Quantum (solo RR)">
+            <button onclick="ejecutar()">Ejecutar</button>
+        </div>
+
+        <h3>Resultado</h3>
+        <pre id="resultado"></pre>
+    </div>
+
+    <script>
+        let procesos = [];
+
+        function agregarProceso() {
+            const nombre = document.getElementById("nombre").value;
+            const llegada = document.getElementById("llegada").value;
+            const duracion = document.getElementById("duracion").value;
+            const prioridad = document.getElementById("prioridad").value || 0;
+            if (!nombre || llegada === "" || duracion === "") {
+                alert("Completa todos los campos.");
+                return;
+            }
+
+            procesos.push({ nombre, llegada, duracion, prioridad });
+            const li = document.createElement("li");
+            li.textContent = `${nombre} | Llegada: ${llegada} | Duración: ${duracion} | Prioridad: ${prioridad}`;
+            document.getElementById("lista-procesos").appendChild(li);
+        }
+
+        async function ejecutar() {
+            const algoritmo = document.getElementById("algoritmo").value;
+            const quantum = document.getElementById("quantum").value || 2;
+            const res = await fetch("/planificar", {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ procesos, algoritmo, quantum })
+            });
+            const data = await res.json();
+            document.getElementById("resultado").textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
