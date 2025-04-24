@@ -1,18 +1,18 @@
 def sjf(procesos):
-    procesos.sort(key=lambda p: (p.llegada, p.duracion))
-    completados = []
+    procesos.sort(key=lambda p: (p.duracion))
+    
     tiempo = 0
-    while procesos:
-        disponibles = [p for p in procesos if p.llegada <= tiempo]
-        if disponibles:
-            actual = min(disponibles, key=lambda p: p.duracion)
-            procesos.remove(actual)
-            actual.inicio = tiempo
-            actual.final = tiempo + actual.duracion
-            actual.espera = actual.inicio - actual.llegada
-            actual.retorno = actual.final - actual.llegada
-            tiempo = actual.final
-            completados.append(actual)
-        else:
-            tiempo += 1
-    return completados
+    
+    for p in procesos:
+        p.espera = max(0, tiempo - p.inicio)
+        p.retorno = p.espera + p.duracion
+        tiempo += p.duracion
+
+    # Promedios
+    prom_espera = sum(p.espera for p in procesos) / len(procesos)
+    prom_retorno = sum(p.retorno for p in procesos) / len(procesos)
+
+    print(f"\nTiempo medio de espera: {prom_espera:.2f}")
+    print(f"Tiempo medio de retorno: {prom_retorno:.2f}")
+
+    return procesos

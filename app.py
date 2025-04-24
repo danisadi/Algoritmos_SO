@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from algoritmos import fcfs, sjf, round_robin, prioridad
 from modelos.proceso import Proceso
 
@@ -26,17 +26,19 @@ def planificar():
     else:
         return {"error": "Algoritmo no válido"}, 400
 
-    return {
+    return jsonify ({
         "procesos": [
             {
                 "nombre": p.nombre,
-                "inicio": p.inicio,
-                "final": p.final,
+                #"inicio": p.inicio,
+                "duracion": p.duracion,
+                #"final": p.final,
                 "espera": p.espera,
-                "retorno": p.retorno
+                "retorno": p.retorno,
+
             } for p in resultado
         ]
-    }
+    })
 
 if __name__ == '__main__':
     app.run(debug=True)
