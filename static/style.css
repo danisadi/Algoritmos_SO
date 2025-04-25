@@ -22,7 +22,7 @@ input, select, button {
 
 button {
     cursor: pointer;
-    background: #007bff;
+    background: #b82639;
     color: white;
     border: none;
     border-radius: 4px;
@@ -40,4 +40,10 @@ pre {
 
 .formulario {
     margin-bottom: 20px;
+}
+
+img {
+    width: 120px !important;
+    height: auto; 
+    float: right;
 }
